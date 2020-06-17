@@ -36,7 +36,7 @@ const Footer = () => (
         <a href="/#" className="google"><i className="fa fa-google-plus"></i></a>
     </div>
     <div className="text-center footer-copyright">
-      <p>Copyright &copy; 2020 FoodProject </p>
+      <p>Copyright &copy; 2020 Team Food Project </p>
     </div>
 </footer>
 

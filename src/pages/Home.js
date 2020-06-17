@@ -3,6 +3,7 @@ import ImageAndWelcome from '../components/ImageAndWelcome';
 import CityList from '../components/CityList';
 import SearchCity from '../components/SearchCity';
 import axios from 'axios';
+import { API } from '../config/api';
 
 
 class Home extends Component {
@@ -22,10 +23,10 @@ class Home extends Component {
 
       searchHandler = () => {
         let keyword = this.state.keyword;
-        var url = "https://developers.zomato.com/api/v2.1/cities";
+        var url = `${API.zomato.baseUrl}/cities`;
         axios.get(url, {
           headers: {
-            'user-key': 'a4c52223f6cb58d5449401e22542dff0'
+            'user-key': API.zomato.api_key
           },
           params: {
             q: keyword 
@@ -38,10 +39,10 @@ class Home extends Component {
       };
 
       getFeaturedCities = ()  => {
-        var url = "https://developers.zomato.com/api/v2.1/cities"
+        var url = `${API.zomato.baseUrl}/cities`;
         axios.get(url, {
           headers: {
-            "user-key": 'a4c52223f6cb58d5449401e22542dff0'
+            "user-key": API.zomato.api_key
           },
           params: {
             city_ids: "74,11052,170"
@@ -75,9 +76,12 @@ class Home extends Component {
               onChange={this.changeKeywordHandler}
               onClickSearch={this.searchHandler}
             />
+
+            {this.state.cityKeywordSearch !== '' && (
+              <CityList title={'Search Result'} cities={this.state.citiesResultSearch}
+              showSubtitle={true} subtitle={this.state.cityKeywordSearch} />
+            )}
     
-            <CityList title={'Search Result'} cities={this.state.citiesResultSearch}
-            showSubtitle={true} subtitle={this.state.cityKeywordSearch} />
           </div>
         </>
       )

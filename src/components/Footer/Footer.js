@@ -7,7 +7,7 @@ const Footer = () => (
     <div className="container">
         <div className="row">
         <div className="col-sm-4 text-center">
-            <h5>About FoodParadise</h5>
+            <h5>About FoodProject</h5>
             <ul>
             <li><a href="/#">About Us</a></li>
             <li><a href="/#">Contact Us</a></li>
@@ -36,7 +36,7 @@ const Footer = () => (
         <a href="/#" className="google"><i className="fa fa-google-plus"></i></a>
     </div>
     <div className="text-center footer-copyright">
-      <p>Copyright &copy; 2020 Team Food Project </p>
+      <p>Copyright &copy; 2020 Team Food Project (Tegar Satya Negara, Aditia Ahmad, Dinda Ayu Swasitka, Ameliya) </p>
     </div>
 </footer>
 

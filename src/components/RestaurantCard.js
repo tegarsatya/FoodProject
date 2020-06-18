@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import RatingLabel from './RatingLabel';
 
 const RestaurantCard = props => (
 
@@ -23,15 +24,7 @@ const RestaurantCard = props => (
                     <tr>
                         <td>Rating</td>
                         <td>
-                        <div className="btn btn-sm"
-                            style={{
-                            color: 'white',
-                            backgroundColor: `#${props.restaurant.user_rating.rating_color}`,
-                            borderColor: `#${props.restaurant.user_rating.rating_color}`,
-                            }}
-                        >
-                            {`${props.restaurant.user_rating.aggregate_rating} (${props.restaurant.user_rating.rating_text})`}
-                        </div>
+                            <RatingLabel labelColor={props.restaurant.user_rating.rating_color} text={`${props.restaurant.user_rating.aggregate_rating} (${props.restaurant.user_rating.rating_text})`}/>
                         </td>
                     </tr>
                     <tr>

@@ -3,7 +3,52 @@ import axios  from 'axios';
 import {API} from '../config/api';
 import CategoryList from "../components/CategoryList";
 import Searchkeyword from "../components/SearchKeyword";
+import SearchCriteria from "../components/SearchCriteria";
+import RestaurantCard from "../components/RestaurantCard";
 
+
+const restaurants = [
+    {
+      "restaurant": {
+        "id": "18875696",
+        "name": "Kintaro Sushi",
+        "location": {
+          "address": "Jl. Suryo No. 20, Senopati, Jakarta",
+          "locality": "Senopati",
+        },
+        "cuisines": "Sushi, Japanese",
+        "average_cost_for_two": 200000,
+        "currency": "IDR",
+        "thumb": "https://b.zmtcdn.com/data/pictures/chains/5/18530405/0feeddcbe877a8e27526a8cf5b501edf.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
+        "user_rating": {
+          "aggregate_rating": "4.9",
+          "rating_text": "Excellent",
+          "rating_color": "3F7E00",
+          "votes": "1358"
+        },
+      }
+    },
+    {
+      "restaurant": {
+        "id": "18875696",
+        "name": "Kintaro Sushi",
+        "location": {
+          "address": "Jl. Suryo No. 20, Senopati, Jakarta",
+          "locality": "Senopati",
+        },
+        "cuisines": "Sushi, Japanese",
+        "average_cost_for_two": 200000,
+        "currency": "IDR",
+        "thumb": "https://b.zmtcdn.com/data/pictures/chains/5/18530405/0feeddcbe877a8e27526a8cf5b501edf.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
+        "user_rating": {
+          "aggregate_rating": "4.9",
+          "rating_text": "Excellent",
+          "rating_color": "3F7E00",
+          "votes": "1358"
+        },
+      }
+    }
+  ] 
 const categoriesDummy = [ 
     {
         "categories" : {
@@ -40,8 +85,44 @@ class City extends Component{
             categorySelected:null,
             Keyword:"",
             criteria:[],
+            restaurants:[]
         }
     }
+
+    searchHandler = () => {
+        this.setState({restaurants: null})
+        let url = `${API.zomato.baseUrl}/search`;
+        let params = {}
+    
+        for (let  cri of this.state.criteria) {
+    
+          switch (cri.criteriaName) {
+            case 'City' : 
+              params.entity_id    = cri.data.id
+              params.entity_type  = 'city'
+              break
+            case 'Category' : 
+              params.category     = cri.data.id
+              break
+            case 'Keyword' : 
+              params.q            = cri.data.name
+              break
+            default : break
+          }
+    
+        }
+    
+        axios.get(url, {
+          headers: {
+            'user-key': API.zomato.api_key
+          },
+          params
+        })
+          .then(({ data }) => {
+            this.setState({ restaurants : data.restaurants })
+          })
+          .catch(err => console.log(err))
+      }
 
     transformCategoriesData = categories => {
         let categoriesTransformed = categories.map(category => {
@@ -77,9 +158,7 @@ class City extends Component{
         let {city_id} = this.props.match.params;
         console.log(this.props.match);
         this.getCityData(city_id);
-
-        let categories = this.transformCategoriesData(categoriesDummy);
-        this.setState({categories});
+        this.getCategoriesData();
     };
 
     categoryClickHandler = category => {
@@ -116,6 +195,42 @@ class City extends Component{
         this.setState({ criteria });
     }
 
+    getCategoriesData = () => {
+        let url = `${API.zomato.baseUrl}/categories`;
+        axios.get(url, {
+            headers: {
+                'user-key': API.zomato.api_key
+            }
+        })
+        .then(({data}) => {let categories = this.transformCategoriesData(data.categories);
+            this.setState({categories});})
+        .catch(err => console.log(err))
+    };
+
+    renderRestaurantList = () => {
+        if(this.state.restaurants == null){
+            return (
+                <div className="col">
+                    <p>Loading ...</p>
+                </div>
+            )
+        }
+
+        if(this.state.restaurants.length > 0) {
+            return (
+                this.state.restaurants.map(({restaurant}) => (
+                    <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                ))
+            )
+        }else {
+            return (
+                <div className="col">
+                    <p>No Data </p>
+                </div>
+            )
+        }
+    }
+
     render() {
         return(
             <div className="container-fluid" style={{ marginTop: 30, marginBottom: 30 }}>
@@ -138,29 +253,15 @@ class City extends Component{
                     <div className="col">
                         <Searchkeyword onClickAddToCriteria={this.addToCriteriahandler} Keyword={this.state.keyword}
                         changeKeywordHandler={this.changeKeywordHandler}/>
-
-                        <div className="card bg-light mb-3" style={{marginTop: 20  }}>
-                            <div className="card-body">
-                                <p className="card-title">Find Restaurants based on Criteria:</p>
-                                <table className="table table-hover">
-                                    <tbody> 
-                                        {this.state.criteria.map((cri, index) => (
-                                            <tr key={index} className="table-active">
-                                                <td width="40%">{cri.criteriaName}</td>
-                                                <td width="50%">{cri.data.name}</td>
-                                                <td width="10%">
-                                                    {cri.criteriaName !== "City" && (
-                                                        <i className="fa fa-times" aria-hidden="true" style={{ color: "red" }} onClick={() => this.removeCriteriaHandler(index)}></i>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="pull-right">
-                                    <button className="btn btn-primary" type="button">Search</button>
-                                </div>
+                        <SearchCriteria criteria={this.state.criteria} removeCriteriaHandler={(index) => this.removeCriteriaHandler(index)} onClickSeacrh={this.searchHadler} />
+                        
+                        <div className ="row">
+                            <div className="col" style={{marginBottom:10}}>
+                                <h4 className="text-success">Restaurant List</h4>
                             </div>
+                        </div>
+                        <div className="row">
+                            {this.renderRestaurantList()}
                         </div>
                     </div>
                 </div>

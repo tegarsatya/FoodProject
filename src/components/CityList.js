@@ -27,7 +27,7 @@ const CityList = (props) => (
 const _renderCityList = cities => {
   if(cities.length > 0 ) {
     return cities.map(city => <CityCard key = {city.id} city={city} />);
-  }else {
+  } else {
     return (
       <div className="col">
         <p className="text-danger">Data not Found !</p>

@@ -24,8 +24,8 @@ const Footer = () => (
         <div className="col-sm-4 text-center">
             <h5>Download App</h5>
             <ul>
-            <li><a href="/#">Google Play</a></li>
-            <li><a href="/#">App Store</a></li>
+            <li><a href="https://apps.apple.com/in/app/zomato-food-restaurant-finder/id434613896?_branch_match_id=802016638132871342">App Store</a></li>
+            <li><a href="https://play.google.com/store/apps/details?id=com.application.zomato&_branch_match_id=802016638132871342">Google Play</a></li>
             </ul>
         </div>
         </div>

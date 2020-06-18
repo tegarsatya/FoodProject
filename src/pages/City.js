@@ -7,74 +7,6 @@ import SearchCriteria from "../components/SearchCriteria";
 import RestaurantCard from "../components/RestaurantCard";
 
 
-const restaurants = [
-    {
-      "restaurant": {
-        "id": "18875696",
-        "name": "Kintaro Sushi",
-        "location": {
-          "address": "Jl. Suryo No. 20, Senopati, Jakarta",
-          "locality": "Senopati",
-        },
-        "cuisines": "Sushi, Japanese",
-        "average_cost_for_two": 200000,
-        "currency": "IDR",
-        "thumb": "https://b.zmtcdn.com/data/pictures/chains/5/18530405/0feeddcbe877a8e27526a8cf5b501edf.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
-        "user_rating": {
-          "aggregate_rating": "4.9",
-          "rating_text": "Excellent",
-          "rating_color": "3F7E00",
-          "votes": "1358"
-        },
-      }
-    },
-    {
-      "restaurant": {
-        "id": "18875696",
-        "name": "Kintaro Sushi",
-        "location": {
-          "address": "Jl. Suryo No. 20, Senopati, Jakarta",
-          "locality": "Senopati",
-        },
-        "cuisines": "Sushi, Japanese",
-        "average_cost_for_two": 200000,
-        "currency": "IDR",
-        "thumb": "https://b.zmtcdn.com/data/pictures/chains/5/18530405/0feeddcbe877a8e27526a8cf5b501edf.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
-        "user_rating": {
-          "aggregate_rating": "4.9",
-          "rating_text": "Excellent",
-          "rating_color": "3F7E00",
-          "votes": "1358"
-        },
-      }
-    }
-  ] 
-const categoriesDummy = [ 
-    {
-        "categories" : {
-            "id"   : 1,
-            "name" : "Delivery"
-        }
-    }, 
-    {
-        "categories" : {
-            "id"   : 2,
-            "name" : "Dine-out"
-        }
-    }, 
-    {
-        "categories" : {
-            "id"   : 3,
-            "name" : "nightlife"
-        }
-    }, 
-    {
-        "categories" : {
-            "id"   : 4,
-            "name" : "catching-up"
-        }
-    }, 
-];
 
 class City extends Component{
     constructor() {
@@ -90,39 +22,38 @@ class City extends Component{
     }
 
     searchHandler = () => {
-        this.setState({restaurants: null})
-        let url = `${API.zomato.baseUrl}/search`;
-        let params = {}
-    
-        for (let  cri of this.state.criteria) {
-    
-          switch (cri.criteriaName) {
-            case 'City' : 
-              params.entity_id    = cri.data.id
-              params.entity_type  = 'city'
-              break
-            case 'Category' : 
-              params.category     = cri.data.id
-              break
-            case 'Keyword' : 
-              params.q            = cri.data.name
-              break
-            default : break
-          }
-    
-        }
-    
-        axios.get(url, {
-          headers: {
-            'user-key': API.zomato.api_key
-          },
-          params
-        })
-          .then(({ data }) => {
-            this.setState({ restaurants : data.restaurants })
-          })
-          .catch(err => console.log(err))
+    this.setState({restaurants: null})
+    let url = `${API.zomato.baseUrl}/search`
+    let params = {}
+
+    for (let cri of this.state.criteria) {
+
+      switch (cri.criteriaName) {
+        case 'City':
+          params.entity_id = cri.data.id
+          params.entity_type = 'city'
+          break
+        case 'Category':
+          params.category = cri.data.id
+          break
+        case 'Keyword':
+          params.q = cri.data.name
+          break
+        default: break
       }
+    }
+
+    axios.get(url, {
+      headers: {
+        'user-key': API.zomato.api_key
+      },
+      params
+    })
+      .then(({ data }) => {
+        this.setState({ restaurants: data.restaurants })
+      })
+      .catch(err => console.log(err))
+  }
 
     transformCategoriesData = categories => {
         let categoriesTransformed = categories.map(category => {
@@ -208,7 +139,7 @@ class City extends Component{
     };
 
     renderRestaurantList = () => {
-        if(this.state.restaurants == null){
+        if(this.state.restaurants === null){
             return (
                 <div className="col">
                     <p>Loading ...</p>
@@ -253,7 +184,7 @@ class City extends Component{
                     <div className="col">
                         <Searchkeyword onClickAddToCriteria={this.addToCriteriahandler} Keyword={this.state.keyword}
                         changeKeywordHandler={this.changeKeywordHandler}/>
-                        <SearchCriteria criteria={this.state.criteria} removeCriteriaHandler={(index) => this.removeCriteriaHandler(index)} onClickSeacrh={this.searchHadler} />
+                        <SearchCriteria criteria={this.state.criteria}  removeCriteriaHandler={(index) => this.removeCriteriaHandler(index)} onClickSearch={this.searchHandler} />
                         
                         <div className ="row">
                             <div className="col" style={{marginBottom:10}}>
